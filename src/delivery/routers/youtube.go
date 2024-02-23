@@ -10,4 +10,5 @@ type YoutubeController = youtube.YoutubeController
 func SetYoutubeRoutes(youtubeController YoutubeController, r *mux.Router) {
 	youtubeRoutes := r.PathPrefix("/youtube").Subrouter()
 	youtubeRoutes.HandleFunc("/getOne", youtubeController.GetOne).Methods("GET")
+	youtubeRoutes.HandleFunc("/getBatch", youtubeController.GetBatch).Methods("GET")
 }

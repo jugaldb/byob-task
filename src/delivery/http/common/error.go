@@ -15,7 +15,6 @@ const (
 	ERROR_UNAUTHORIZED = "unauthorized"
 	ERROR_UNKNOWN      = "unknown"
 	ERROR_BAD_REQ      = "bad_request"
-	NPCI_COMMON_ERROR  = "npci_common_error"
 )
 
 var httpErrorMap map[string]*httpErrorInfo
@@ -55,6 +54,7 @@ func getErrorMap() map[string]*httpErrorInfo {
 		httpErrorMap[errorsDom.PANIC_ERROR] = &httpErrorInfo{statusCode: 500, message: "Something went wrong! please try again later.", code: errorsDom.PANIC_ERROR}
 		httpErrorMap[errorsDom.RATE_LIMIT_EXCEEDED] = &httpErrorInfo{statusCode: 429, code: errorsDom.RATE_LIMIT_EXCEEDED}
 		httpErrorMap[errorsDom.INVALID_BODY] = &httpErrorInfo{statusCode: 400, code: errorsDom.INVALID_BODY}
+		httpErrorMap[errorsDom.API_ERROR] = &httpErrorInfo{statusCode: 400, code: errorsDom.API_ERROR}
 	}
 	return httpErrorMap
 }

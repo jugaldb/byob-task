@@ -11,6 +11,8 @@ const (
 	PANIC_ERROR           = "PANIC_ERROR"
 	INVALID_REQUEST       = "INVALID_REQUEST"
 	INVALID_BODY          = "INVALID_BODY"
+	API_ERROR             = "API_ERROR"
+	INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
 )
 
 func InvalidContextVal(val string) error {
@@ -27,4 +29,12 @@ func InvalidRequest() error {
 
 func InvalidBody(message string) error {
 	return utils.AppErrWithCode(INVALID_BODY, "The "+message+" is invalid")
+}
+
+func APIError(message string) error {
+	return utils.AppErrWithCode(API_ERROR, message)
+}
+
+func InternalServerError(e error) error {
+	return utils.AppErrWithError(INTERNAL_SERVER_ERROR, e.Error(), e)
 }
