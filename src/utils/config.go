@@ -11,7 +11,7 @@ import (
 
 // Config represents global app configuration type.
 type Config struct {
-	Name       string `env:"NAME" envDefault:"halfblood"`
+	Name       string `env:"NAME" envDefault:"byob-task"`
 	DGN        string `env:"DGN" envDefault:"local"`
 	Debug      bool   `env:"DEBUG" envDefault:"true"`
 	ServerPort int32  `env:"SERVER_PORT" envDefault:"3000"`
@@ -23,10 +23,6 @@ type Config struct {
 	MetricsPort string `env:"METRICS_PORT" envDefault:"9000"`
 
 	YoutubeAPIKey string `env:"YOUTUBE_API_KEY" envDefault:"sample_key"`
-
-	DBUri string `env:"DB_URI" envDefault:"postgresql://postgres@localhost:5432/mvp?sslmode=disable"`
-
-	BaseUrl string `env:"BASE_URL" envDefault:"http://localhost:3001"`
 }
 
 // NewConfig creates a new Config struct.

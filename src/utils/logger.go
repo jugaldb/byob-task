@@ -31,7 +31,7 @@ func NewLogger(config *Config) *StandardLogger {
 		cfg = zap.NewProductionConfig()
 		cfg.OutputPaths = []string{"stdout"}
 		cfg.ErrorOutputPaths = []string{"stdout"}
-		cfg.InitialFields = map[string]any{"name": "fam.service.halfblood"}
+		cfg.InitialFields = map[string]any{"name": "byob-task"}
 		cfg.EncoderConfig.EncodeLevel = IntegerLevelEncoder
 		cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 		cfg.EncoderConfig.TimeKey = "time"
