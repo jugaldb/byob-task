@@ -27,6 +27,9 @@ test:
 build:
     rm -rf ./dist && CGO_ENABLED=0 {{GOBUILD_COMMAND}} -ldflags="-w -s" -o ./dist/app ./src
 
+run:
+    just build && ./dist/app
+
 debug:
     rm -rf ./debugApp && CGO_ENABLED=0 {{GOBUILD_COMMAND}} -gcflags="all=-N -l" -o debugApp ./src && ./debugApp
 

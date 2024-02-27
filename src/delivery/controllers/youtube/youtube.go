@@ -10,11 +10,13 @@ import (
 	youtube_usecase "jugaldb.com/byob_task/src/internal/usecases/youtube"
 	"jugaldb.com/byob_task/src/utils"
 	"net/http"
+	"time"
 )
 
 type YoutubeController interface {
 	GetOne(w http.ResponseWriter, r *http.Request)
 	GetBatch(w http.ResponseWriter, r *http.Request)
+	Home(w http.ResponseWriter, r *http.Request)
 }
 
 type youtubeController struct {
@@ -42,6 +44,16 @@ func (y *youtubeController) GetOne(w http.ResponseWriter, r *http.Request) {
 	} else {
 		common.SendJson(w, channelDetails)
 	}
+}
+
+func (y *youtubeController) Home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	common.SendJson(w, map[string]any{
+		"hello":        "world",
+		"current_time": time.Now(),
+		"link":         "https://github.com/jugaldb/byob-task",
+	})
 }
 
 func (y *youtubeController) GetBatch(w http.ResponseWriter, r *http.Request) {

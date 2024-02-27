@@ -2,7 +2,6 @@ package youtube_usecase
 
 import (
 	"context"
-	"fmt"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
 	errorsDom "jugaldb.com/byob_task/src/internal/domain/errors"
@@ -60,30 +59,24 @@ func (y *youtubeUseCase) GetOne(ctx context.Context, query string) (*youtube_dom
 	if len(channelResponse.Items) == 0 {
 		return nil, errorsDom.APIError("Channel not found: " + channelID)
 	}
-	fmt.Println("scasdfds")
 
 	var channelDescription = channelResponse.Items[0].Snippet.Description
-	fmt.Println(channelDescription)
 
 	// Extract keywords from channel description
 	keywords := extractKeywords(channelDescription)
 	country := channelResponse.Items[0].Snippet.Country
-	fmt.Println("asdavsd")
 
 	// Extract channel statistics
 	channelStats := channelResponse.Items[0].Statistics
 	subscriberCount := channelStats.SubscriberCount
 	totalViews := channelStats.ViewCount
 	var totalVideos = channelStats.VideoCount
-	fmt.Println("Asdadad")
 	var avgViewsPerVideo float64
 	if totalVideos != 0 {
 		avgViewsPerVideo = float64(totalViews) / float64(totalVideos)
 	}
 	profileImageURL := channelResponse.Items[0].Snippet.Thumbnails.High.Url
 	bannerImageURL := channelResponse.Items[0].BrandingSettings.Image.BannerExternalUrl
-	fmt.Println(profileImageURL)
-	fmt.Println(bannerImageURL)
 	part = []string{"snippet"}
 	playlistItemsResponse, err := service.PlaylistItems.List(part).PlaylistId("UU" + channelID[2:]).MaxResults(1).Do()
 	if err != nil {
