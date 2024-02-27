@@ -42,87 +42,73 @@ func (y *youtubeUseCase) GetOne(ctx context.Context, query string) (*youtube_dom
 		part := []string{"id"}
 		searchResponse, err := service.Search.List(part).Q(query).Type("channel").MaxResults(1).Do()
 		if err != nil {
-			return nil, errorsDom.APIError("no channel found with the name " + query)
+			return nil, errorsDom.APIError("Error " + err.Error())
 		}
 		if len(searchResponse.Items) == 0 {
-			return nil, errorsDom.APIError("no channel found with the name " + query)
+			return nil, errorsDom.APIError("no channel found :  " + query)
 		}
 		channelID = searchResponse.Items[0].Id.ChannelId
 	}
 
 	// Fetch channel details
-	part := []string{"statistics", "snippet"}
+	part := []string{"statistics", "snippet", "brandingSettings"}
 	channelResponse, err := service.Channels.List(part).Id(channelID).Do()
 	if err != nil {
-		return nil, errorsDom.APIError("no response found with the name " + query)
+		return nil, errorsDom.APIError("Error  " + err.Error())
 	}
 
 	if len(channelResponse.Items) == 0 {
-		return nil, errorsDom.APIError("channel with ID '%s' not found" + channelID)
+		return nil, errorsDom.APIError("Channel not found: " + channelID)
 	}
+	fmt.Println("scasdfds")
 
 	var channelDescription = channelResponse.Items[0].Snippet.Description
 	fmt.Println(channelDescription)
 
 	// Extract keywords from channel description
 	keywords := extractKeywords(channelDescription)
+	country := channelResponse.Items[0].Snippet.Country
+	fmt.Println("asdavsd")
 
 	// Extract channel statistics
 	channelStats := channelResponse.Items[0].Statistics
 	subscriberCount := channelStats.SubscriberCount
 	totalViews := channelStats.ViewCount
-
-	part = []string{"contentDetails"}
-	// Fetch playlist details to get the number of videos
-	playlistResponse, err := service.Playlists.List(part).ChannelId(channelID).Do()
-	if err != nil {
-		return nil, errorsDom.APIError("channel with ID '%s' not found" + channelID)
+	var totalVideos = channelStats.VideoCount
+	fmt.Println("Asdadad")
+	var avgViewsPerVideo float64
+	if totalVideos != 0 {
+		avgViewsPerVideo = float64(totalViews) / float64(totalVideos)
 	}
-
-	var totalVideos uint64
-	for _, playlist := range playlistResponse.Items {
-		totalVideos += uint64(playlist.ContentDetails.ItemCount)
-	}
-
-	// Fetch videos from uploads playlist to calculate engagement metrics
-	uploadsPlaylistID := playlistResponse.Items[0].Id
-	playlistItemsResponse, err := service.PlaylistItems.List(part).PlaylistId(uploadsPlaylistID).Do()
+	profileImageURL := channelResponse.Items[0].Snippet.Thumbnails.High.Url
+	bannerImageURL := channelResponse.Items[0].BrandingSettings.Image.BannerExternalUrl
+	fmt.Println(profileImageURL)
+	fmt.Println(bannerImageURL)
+	part = []string{"snippet"}
+	playlistItemsResponse, err := service.PlaylistItems.List(part).PlaylistId("UU" + channelID[2:]).MaxResults(1).Do()
 	if err != nil {
 		return nil, err
 	}
 
-	var totalLikes, totalComments uint64
-	for _, playlistItem := range playlistItemsResponse.Items {
-		videoID := playlistItem.ContentDetails.VideoId
-		part = []string{"statistics"}
-		videoResponse, err := service.Videos.List(part).Id(videoID).Do()
-		if err != nil {
-			return nil, errorsDom.APIError("channel with ID '%s' not found" + channelID)
-		}
-		videoStats := videoResponse.Items[0].Statistics
-		likes := videoStats.LikeCount
-		comments := videoStats.CommentCount
-		totalLikes += uint64(likes)
-		totalComments += uint64(comments)
+	if len(playlistItemsResponse.Items) == 0 {
+		return nil, err
 	}
 
-	var avgViewsPerVideo, avgLikesPerVideo, avgCommentsPerVideo float64
-	if totalVideos != 0 {
-		avgViewsPerVideo = float64(totalViews) / float64(totalVideos)
-		avgLikesPerVideo = float64(totalLikes) / float64(totalVideos)
-		avgCommentsPerVideo = float64(totalComments) / float64(totalVideos)
-	}
+	latestVideoID := playlistItemsResponse.Items[0].Snippet.ResourceId.VideoId
+	latestVideoURL := "https://www.youtube.com/embed/" + latestVideoID
 
 	metrics := &youtube_domain.ChannelMetrics{
-		SubscriberCount:     subscriberCount,
-		TotalViews:          totalViews,
-		TotalVideos:         totalVideos,
-		TotalLikes:          totalLikes,
-		TotalComments:       totalComments,
-		AvgViewsPerVideo:    avgViewsPerVideo,
-		AvgLikesPerVideo:    avgLikesPerVideo,
-		AvgCommentsPerVideo: avgCommentsPerVideo,
-		Keywords:            keywords,
+		SubscriberCount:  subscriberCount,
+		TotalViews:       totalViews,
+		TotalVideos:      totalVideos,
+		Country:          country,
+		AvgViewsPerVideo: avgViewsPerVideo,
+		Keywords:         keywords,
+		ChannelName:      channelResponse.Items[0].Snippet.Title,
+		ChannelCreated:   channelResponse.Items[0].Snippet.PublishedAt,
+		ProfileImageURL:  profileImageURL,
+		BannerImageURL:   bannerImageURL,
+		LatestVideo:      latestVideoURL,
 	}
 
 	return metrics, nil

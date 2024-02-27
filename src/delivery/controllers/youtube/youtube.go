@@ -2,6 +2,7 @@ package youtube
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"jugaldb.com/byob_task/src/delivery/http/common"
 	errorsDom "jugaldb.com/byob_task/src/internal/domain/errors"
@@ -33,13 +34,13 @@ func (y *youtubeController) GetOne(w http.ResponseWriter, r *http.Request) {
 		channelLink = channelLinkQuery[0]
 	}
 	channelDetails, err := y.youtubeUsecase.GetOne(r.Context(), channelLink)
+	fmt.Println("channelDetails", channelDetails)
+	fmt.Println(err)
 	if err != nil {
 		common.HandleError(r.Context(), w, err)
 		return
 	} else {
-		common.SendJson(w, map[string]any{
-			"data": channelDetails,
-		})
+		common.SendJson(w, channelDetails)
 	}
 }
 
@@ -63,9 +64,7 @@ func (y *youtubeController) GetBatch(w http.ResponseWriter, r *http.Request) {
 		common.HandleError(r.Context(), w, err)
 		return
 	} else {
-		common.SendJson(w, map[string]any{
-			"data": channelDetails,
-		})
+		common.SendJson(w, channelDetails)
 	}
 }
 

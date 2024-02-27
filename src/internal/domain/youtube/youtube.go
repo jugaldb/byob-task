@@ -1,15 +1,17 @@
 package youtube_domain
 
 type ChannelMetrics struct {
-	SubscriberCount     uint64
-	TotalViews          uint64
-	TotalVideos         uint64
-	TotalLikes          uint64
-	TotalComments       uint64
-	AvgViewsPerVideo    float64
-	AvgLikesPerVideo    float64
-	AvgCommentsPerVideo float64
-	Keywords            []string
+	SubscriberCount  uint64
+	TotalViews       uint64
+	TotalVideos      uint64
+	Country          string
+	AvgViewsPerVideo float64
+	Keywords         []string
+	ChannelCreated   string
+	ChannelName      string
+	ProfileImageURL  string
+	BannerImageURL   string
+	LatestVideo      string
 }
 
 type ChannelData struct {
