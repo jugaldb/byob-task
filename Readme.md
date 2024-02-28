@@ -31,8 +31,9 @@ Hi recruiters 🙋🏻‍♂️, this is my submission for the assignment-task f
 ✅ - Make a dashboard to view the youtube aggregated data being fetched
 
 - It is not the best UI I have designed but given the time constraint and the complexity, this is what I could achieve
-  ![Demo](./assets/Home-page-1.png)
-  ![Demo](./assets/Home-Page-2.png)
+  ![Demo](./assets/home_page_0.png)
+  ![Demo](./assets/home_page_1.png)
+  ![Demo](./assets/home_page_2.png)
 
 
 - The deployed website can be found on: [Link](https://byob-task.jugaldb.com)
